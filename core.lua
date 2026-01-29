@@ -24,6 +24,7 @@ hooksecurefunc(PersonalResourceDisplayFrame, "SetupAlternatePowerBar", function(
 end)
 
 local f = CreateFrame("Frame")
+f:RegisterEvent("PLAYER_LOGIN")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("PLAYER_REGEN_DISABLED")
 f:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -51,13 +52,22 @@ local function ApplyFading()
         UIFrameFadeIn(cdbuffs, 0.2, cdbuffs:GetAlpha(), 1)
     else
         -- Fade to 10% opacity over 0.2 seconds
-        UIFrameFadeOut(prd, 0.2, prd:GetAlpha(), 0.05)
+        UIFrameFadeOut(prd, 0.2, prd:GetAlpha(), 0.07)
         UIFrameFadeOut(debuffs, 0.2, debuffs:GetAlpha(), 0.1)
         UIFrameFadeOut(cdbuffs, 0.2, cdbuffs:GetAlpha(), 0.1)
     end
 end
 
-f:SetScript("OnEvent", function(self, event)
-    -- Small delay to ensure frames exists
-    C_Timer.After(0.1, ApplyFading)
+f:SetScript("OnEvent", function(self, event, ...)
+    if event == "PLAYER_LOGIN" then
+        C_CVar.SetCVar("UnitNameOwn", "0")
+        C_CVar.SetCVar("nameplateShowSelf", "1")
+        C_CVar.SetCVar("NameplatePersonalShowAlways", "1")
+        C_CVar.SetCVar("cooldownViewerEnabled", "1")
+        C_CVar.SetCVar("externalDefensivesEnabled", "1")
+        C_CVar.SetCVar("damageMeterEnabled", "1")
+    else
+        -- Small delay to ensure all is initialized
+        C_Timer.After(0.1, ApplyFading)
+    end
 end)
