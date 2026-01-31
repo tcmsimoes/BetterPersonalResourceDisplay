@@ -51,10 +51,10 @@ local function ApplyFading()
         UIFrameFadeIn(debuffs, 0.2, debuffs:GetAlpha(), 1)
         UIFrameFadeIn(cdbuffs, 0.2, cdbuffs:GetAlpha(), 1)
     else
-        -- Fade to 10% opacity over 0.2 seconds
-        UIFrameFadeOut(prd, 0.2, prd:GetAlpha(), 0.07)
-        UIFrameFadeOut(debuffs, 0.2, debuffs:GetAlpha(), 0.1)
-        UIFrameFadeOut(cdbuffs, 0.2, cdbuffs:GetAlpha(), 0.1)
+        -- Fade to 10% opacity over 2 seconds
+        UIFrameFadeOut(prd, 2, prd:GetAlpha(), 0.07)
+        UIFrameFadeOut(debuffs, 2, debuffs:GetAlpha(), 0.1)
+        UIFrameFadeOut(cdbuffs, 2, cdbuffs:GetAlpha(), 0.1)
     end
 end
 
@@ -66,9 +66,12 @@ f:SetScript("OnEvent", function(self, event, ...)
         C_CVar.SetCVar("cooldownViewerEnabled", "1")
         C_CVar.SetCVar("externalDefensivesEnabled", "1")
         C_CVar.SetCVar("damageMeterEnabled", "1")
-    else
+    elseif event == "PLAYER_ENTERING_WORLD" then
         -- Small delay to ensure all is initialized
-        C_Timer.After(0.1, ApplyFading)
+        C_Timer.After(1, ApplyFading)
+        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+    else
+        ApplyFading()
     end
 end)
 
