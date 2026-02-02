@@ -44,7 +44,7 @@ local function ApplyFading()
         UIFrameFadeIn(debuffs, 0.2, debuffs:GetAlpha(), 1)
         UIFrameFadeIn(cdbuffs, 0.2, cdbuffs:GetAlpha(), 1)
     else
-        UIFrameFadeOut(prd, 2, prd:GetAlpha(), 0.06)
+        UIFrameFadeOut(prd, 2, prd:GetAlpha(), 0.1)
         UIFrameFadeOut(debuffs, 2, debuffs:GetAlpha(), 0.1)
         UIFrameFadeOut(cdbuffs, 2, cdbuffs:GetAlpha(), 0.1)
     end
