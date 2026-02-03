@@ -1,25 +1,41 @@
-local function ApplyStyle(bar, border)
+PersonalResourceDisplayFrame.HealthBarsContainer:SetHeight(25)
+PersonalResourceDisplayFrame:SetScale(0.75)
+
+local function StyleBar(bar, border)
     bar:SetStatusBarTexture("UI-HUD-CoolDownManager-Bar")
     if not bar.bg then
         bar.bg = bar:CreateTexture(nil, "BACKGROUND", nil, -8)
-        bar.bg:SetAtlas("UI-HUD-CoolDownManager-Bar-BG")  -- Fixed: was "bg"
+        bar.bg:SetAtlas("UI-HUD-CoolDownManager-Bar-BG")
         bar.bg:SetPoint("TOPLEFT", bar, "TOPLEFT", -3, 3)
         bar.bg:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 7, -7)
     end
     border:Hide()
 end
 
-PersonalResourceDisplayFrame.HealthBarsContainer:SetHeight(25)
-PersonalResourceDisplayFrame:SetScale(0.75)
+local function StyleAbsorbs(bar)
+    if bar.totalAbsorb then
+        bar.totalAbsorb:SetAtlas("raidframe-shield-fill")
+    end
+    if bar.totalAbsorbOverlay then
+        bar.totalAbsorbOverlay:SetAtlas("RaidFrame-Shield-Overlay", true)
+        bar.totalAbsorbOverlay:SetHorizTile(true)
+        bar.totalAbsorbOverlay:SetVertTile(true)
+    end
+    if bar.overAbsorbGlow then
+        bar.overAbsorbGlow:SetAtlas("RaidFrame-Shield-Overshield", true)
+    end
+end
 
 hooksecurefunc(PersonalResourceDisplayFrame, "SetupAlternatePowerBar", function(self)
     local prdHealthBar = self.HealthBarsContainer.healthBar
     local prdPowerBar = self.PowerBar
 
-    ApplyStyle(prdHealthBar, self.HealthBarsContainer.border)
-    ApplyStyle(prdPowerBar, prdPowerBar.Border)
+    StyleBar(prdHealthBar, self.HealthBarsContainer.border)
+    StyleBar(prdPowerBar, prdPowerBar.Border)
 
-    local localizedClass, englishClass = UnitClass("player")
+    StyleAbsorbs(prdHealthBar)
+
+    local _, englishClass = UnitClass("player")
     local classColor = RAID_CLASS_COLORS[englishClass]
     prdHealthBar:SetStatusBarColor(classColor.r, classColor.g, classColor.b)
 end)
@@ -68,6 +84,7 @@ f:SetScript("OnEvent", function(self, event, ...)
     elseif event == "PLAYER_ENTERING_WORLD" then
         -- Small delay to ensure all is initialized
         C_Timer.After(3, ApplyFading)
+
         self:UnregisterEvent("PLAYER_ENTERING_WORLD")
     else
         ApplyFading()
